@@ -12,23 +12,28 @@ void main() {
 
 // Mood Model - The "Brain" of our app
 class MoodModel with ChangeNotifier {
-  // changed from emoji text to a real asset path (required for Image.asset)
   String _currentMood = 'assets/happy.webp';
   String get currentMood => _currentMood;
 
+  // NEW: background color property
+  Color _backgroundColor = Colors.yellow;
+  Color get backgroundColor => _backgroundColor;
+
   void setHappy() {
-    // changed to a String path + added missing semicolon
     _currentMood = 'assets/happy.webp';
+    _backgroundColor = Colors.yellow; 
     notifyListeners();
   }
 
   void setSad() {
     _currentMood = 'assets/sad.webp';
+    _backgroundColor = Colors.blue; 
     notifyListeners();
   }
 
   void setExcited() {
     _currentMood = 'assets/excited.webp';
+    _backgroundColor = Colors.orange; 
     notifyListeners();
   }
 }
@@ -49,20 +54,25 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Mood Toggle Challenge')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('How are you feeling?', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 30),
-            MoodDisplay(),
-            SizedBox(height: 50),
-            MoodButtons(),
-          ],
-        ),
-      ),
+    return Consumer<MoodModel>(
+      builder: (context, moodModel, child) {
+        return Scaffold(
+          appBar: AppBar(title: Text('Mood Toggle Challenge')),
+          backgroundColor: moodModel.backgroundColor, // NEW
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('How are you feeling?', style: TextStyle(fontSize: 24)),
+                SizedBox(height: 30),
+                MoodDisplay(),
+                SizedBox(height: 50),
+                MoodButtons(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -107,7 +117,7 @@ class MoodButtons extends StatelessWidget {
           onPressed: () {
             Provider.of<MoodModel>(context, listen: false).setExcited();
           },
-          child: Text('Excited 🎉 use your own img here '),
+          child: Text('Excited 🎉'),
         ),
       ],
     );
